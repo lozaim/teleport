@@ -1,0 +1,23 @@
+version: '2'
+services:
+  teleport:
+    image: teleport_image
+    container_name: teleport
+    entrypoint: /usr/local/bin/teleport start
+    hostname: teleport.$domain
+    ports:
+      - "3023:3023"
+      - "3024:3024"
+      - "3025:3025"
+      - "443:443"
+ #   volumes:
+  #    - .teleport_conf:/etc/teleport
+  #    - .teleport_data:/var/lib/teleport
+  #    - .teleport_cert:/mnt/shared/certs
+    networks:
+      teleport:
+        aliases:
+          - proxy.teleport.$domain
+
+networks:
+  teleport:
