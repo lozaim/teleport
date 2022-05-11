@@ -1,0 +1,38 @@
+stages:
+  - build
+  - test
+  - run
+
+variables:
+  domain: franko.ua
+
+stage_build:
+  stage: build
+  tags:
+      - test
+  script:
+      - docker build  -t teleport_image --build-arg domain=$domain .
+  
+stage_testing:
+  stage: test
+  tags : 
+      - test
+  before_script:
+      - echo 'DOMAIN='$domain >> .env  
+  script:
+      - docker-compose up -d
+      - sleep 10
+      - curl -k https://teleport.$domain
+      - docker stop teleport
+  artifacts:
+    paths:
+      - .env
+
+stage_running:
+  stage: run
+  tags: 
+      - test   
+  script:
+       - docker-compose up -d
+  when: manual
+ .gitlab-ci.yml
